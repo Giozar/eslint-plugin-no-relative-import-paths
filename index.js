@@ -25,7 +25,7 @@ function getRelativePathDepth(path) {
 }
 
 function getAbsolutePath(relativePath, context, rootDir, prefix, noSlashAfterAt) {
-  const absolutePth = [
+  return [
     prefix,
     ...path
       .relative(
@@ -33,8 +33,7 @@ function getAbsolutePath(relativePath, context, rootDir, prefix, noSlashAfterAt)
         path.join(path.dirname(context.getFilename()), relativePath)
       )
       .split(path.sep)
-  ].filter(String).join("/");
-  return noSlashAfterAt ? absolutePth.replace(`/`,`` ) : absolutePth;
+  ].filter(String).join("/").replace(noSlashAfterAt && prefix ? `/` : ``, ``);
 }
 
 const message = "import statements should have an absolute path";
@@ -57,7 +56,7 @@ module.exports = {
                 rootDir: { type: "string" },
                 prefix: { type: "string" },
                 allowedDepth: { type: "number" },
-                noSlashAfterAt: { type: "boolean" }, // Nueva opción
+                noSlashAfterAt: { type: "boolean" },
               },
               additionalProperties: false,
             },
@@ -70,7 +69,7 @@ module.exports = {
           allowSameFolder: context.options[0]?.allowSameFolder || false,
           rootDir: context.options[0]?.rootDir || '',
           prefix: context.options[0]?.prefix || '',
-          noSlashAfterAt: context.options[0]?.noSlashAfterAt || false, // Default: false
+          noSlashAfterAt: context.options[0]?.noSlashAfterAt || false,
         };
 
         return {
